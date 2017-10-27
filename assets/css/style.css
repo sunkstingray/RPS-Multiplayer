@@ -5,3 +5,7 @@
 .p2 {
 	cursor: pointer;
 }
+
+#player-display {
+	margin-bottom: 30px;
+}

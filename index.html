@@ -17,7 +17,18 @@
 
 <div class="container">
 	<div class="jumbotron border border-dark"><h1 class="display-3">Rock, Paper, Scissors</h1></div>
-	<div class="row"><div class="col-md-12 text-center"><p>Hi, Name. You are player 1.</p><p>Its your turn!</p></div></div>
+	<div class="row">
+		<div class="col-md-12 text-center">
+			<div id="player-display">
+				<form class="form-inline">
+					<label class="sr-only" for="player-name">Add New Category</label>
+					<input type="text" class="form-control mb-2 mr-sm-2 mb-sm-0 w-75" id="player-name" placeholder="Name">
+					<button type="submit" class="btn btn-primary" id="player-submit">Start</button>
+				</form>
+			</div>
+			<div id="turn-display"></div>
+		</div>
+	</div>
 	<div class="row">
 		<div class="col-md-4 border border-dark rounded" id="player-one-box">
 			<div id="player-one">Player 1</div>

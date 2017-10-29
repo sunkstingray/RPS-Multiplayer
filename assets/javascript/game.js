@@ -1,4 +1,6 @@
 // set global variables
+var playerNum;
+var player;
 var playerOneChoice;
 var playerTwoChoice = "rock";
 var playerOneWins = 0;
@@ -21,22 +23,18 @@ firebase.initializeApp(config);
 
 var database = firebase.database();
 
+
+
 // setup player in Firebase
 $("#player-submit").on("click", function(event) {
         
         event.preventDefault();
 
-        var player = $("#player-name").val().trim();
+        player = $("#player-name").val().trim();
 
-        database.ref().set({
-        	players:{
-        		1:{
-        			losses: 0,
-        			name: player,
-        			wins: 0
-        		}
-        	}
-      	});
+        
+        playerCheck();
+        
 
         $('#player-display').html("Hi "+player+"! You are player 1.");
       });
@@ -90,8 +88,6 @@ function determineWinner() {
     database.ref("players/1").update({
     	losses: playerOneLosses,
     	wins: playerOneWins,
-    	// losses: playerTwoLosses,
-    	// wins: playerTwoWins,
     })
 
     database.ref("players/2").update({
@@ -110,3 +106,35 @@ $(".p1").on("click", function(){
     $("#score-one").html("Wins: "+playerOneWins+" Losses: "+playerOneLosses);
     $("#score-two").html("Wins: "+playerTwoWins+" Losses: "+playerTwoLosses);
 });
+
+// check to see how many players are connected
+
+function playerCheck() {
+	database.ref().on("value", function(snapshot) {
+  		if (snapshot.numChildren() < 2){
+  			if (snapshot.child("1").exists()) {
+  				playerNum = 2;
+  			}
+  			else {
+  				playerNum = 1;
+  			}
+  			console.log("player number:"+playerNum)
+  			database.ref().update({
+        	players:{
+        		[playerNum]:{
+        			losses: 0,
+        			name: player,
+        			wins: 0
+        		}
+        	}
+      	});
+  		}
+  else {
+  	$('#player-display').html("Sorry, game is full. Try again later.");
+  }
+});
+	console.log(playerNum);
+}
+
+
+database.ref("players").onDisconnect().remove(playerNum);

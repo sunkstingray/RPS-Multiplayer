@@ -29,3 +29,34 @@
 p {
 	margin-bottom: 0;
 }
+
+.rock {
+	font-family: 'Frijole', cursive;
+	font-size: 30px;
+	color: #331f1b;
+}
+
+.paper {
+	font-family: 'Fredericka the Great', cursive;
+	font-size: 35px;
+	color: #3a392c;
+}
+
+.scissors {
+	font-family: 'Bigelow Rules', cursive;
+	font-size: 48px;
+	color: #262d38;
+}
+
+.chat-hide {
+	display: none;
+
+}
+
+.player-1 {
+	color: blue;
+}
+
+.player-2 {
+	color: green;
+}

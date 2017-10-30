@@ -7,7 +7,8 @@ var playerOneWins = 0;
 var playerTwoWins = 0;
 var playerOneLosses = 0;
 var playerTwoLosses = 0;
-
+var oneChoices = "<div class='p1 rock' data-one='rock'>Rock</div><div class='p1 paper' data-one='paper'>Paper</div><div class='p1 scissors' data-one='scissors'>Scissors</div>";
+var twoChoices = "<div class='p2 rock' data-one='rock'>Rock</div><div class='p2 paper' data-one='paper'>Paper</div><div class='p2 scissors' data-one='scissors'>Scissors</div>";
 
 // Initialize Firebase
 var config = {
@@ -36,8 +37,9 @@ $("#player-submit").on("click", function(event) {
         playerCheck();
         getNum(player);
         console.log(playerNum+"!!!");
+        greeting();
 
-        $('#player-display').html("Hi "+player+"! You are player "+playerNum+".");
+        
       });
 
 
@@ -155,12 +157,13 @@ console.log(playerNum);
 // Get player number from firebase
 
 function getNum(name) {
-   database.ref("players").once("value", function(snapshot) {
+   database.ref("players").on("value", function(snapshot) {
     snapshot.forEach(function(childSnapshot) {
       var currentName = childSnapshot.child("name").val();
       console.log("currentName:"+currentName);
       var currentNum = childSnapshot.key;
       console.log("currentNum:"+currentNum);
+      console.log("getNum player:"+player);
       if (player === currentName){
         playerNum = currentNum;
       }})})};
@@ -172,21 +175,58 @@ $("#chat-send").on("click", function(event) {
 
   var newChat = $("#chat").val();
   database.ref("chat").push({
-    // "name": player,
-    "message": newChat
+    "name": player,
+    "message": newChat,
+    "number": playerNum
   });
+
+  $('#chat').val('');
 
 });
 
 //update chat window
    database.ref("chat").on("value", function(snapshot) {
+    $("#chat-display").empty();
+    console.log("empty");
     snapshot.forEach(function(childSnapshot) {
       var chatLineId = $("#chat-display")
       var chatLine = $("<p>")
       var chatLineName = childSnapshot.child("name").val();
       var chatLineMessage = childSnapshot.child("message").val();
-      // chatLine.addClass("player-"+playerNum);
+      chatLine.addClass("player-"+childSnapshot.child("number").val());
       chatLine.html(chatLineName+": "+chatLineMessage)
       chatLineId.prepend(chatLine);
     })
     });
+
+   // get player number and show greeting
+
+   function greeting() {
+    database.ref("players").on("value", function(snapshot){
+      if (snapshot.child("1").child("name").val() === player){
+        $('#player-display').html("Hi "+player+"! You are player 1.");
+        $(".chat-hide").show();
+      }
+      else if (snapshot.child("2").child("name").val() === player){
+        $('#player-display').html("Hi "+player+"! You are player 2.");
+        $(".chat-hide").show();
+      }
+    })
+   }
+
+   // Display score when updated
+
+   database.ref().on("value", function(snapshot){
+    var win1 = snapshot.child("players").child("1").child("wins").val();
+    var win2 = snapshot.child("players").child("2").child("wins").val();
+    var loss1 = snapshot.child("players").child("1").child("losses").val();
+    var loss2 = snapshot.child("players").child("2").child("losses").val();
+    if (win1 != null && win2 != null && loss1 != null && loss2 != null){
+      $("#score-one").html("Wins: "+win1+" Losses: "+loss1);
+      $("#score-two").html("Wins: "+win2+" Losses: "+loss2);
+    }
+   });
+
+
+   // Display player info
+   

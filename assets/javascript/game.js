@@ -1,5 +1,5 @@
 // set global variables
-var playerNum;
+var playerNum = "";
 var player;
 var playerOneChoice;
 var playerTwoChoice = "rock";
@@ -110,24 +110,32 @@ $(".p1").on("click", function(){
 // check to see how many players are connected
 
 function playerCheck() {
-	database.ref().on("value", function(snapshot) {
+	database.ref("players").once("value", function(snapshot) {
   		if (snapshot.numChildren() < 2){
   			if (snapshot.child("1").exists()) {
   				playerNum = 2;
+  				console.log("YO");
   			}
   			else {
   				playerNum = 1;
+  				console.log("LO");
   			}
   			console.log("player number:"+playerNum)
-  			database.ref().update({
-        	players:{
-        		[playerNum]:{
+  			database.ref("players").update({
+        	[playerNum]: {
         			losses: 0,
         			name: player,
         			wins: 0
         		}
-        	}
+        	
       	});
+
+  			if (playerNum == 1){
+				database.ref().child("players/1").onDisconnect().remove();
+			}
+			else {
+				database.ref().child("players/2").onDisconnect().remove();
+			}
   		}
   else {
   	$('#player-display').html("Sorry, game is full. Try again later.");
@@ -137,4 +145,3 @@ function playerCheck() {
 }
 
 
-database.ref("players").onDisconnect().remove(playerNum);

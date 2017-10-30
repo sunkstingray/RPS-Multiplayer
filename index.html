@@ -32,22 +32,35 @@
 	<div class="row">
 		<div class="col-md-4 border border-dark rounded" id="player-one-box">
 			<div id="player-one">Player 1</div>
-			<div class="p1" data-one="rock">Rock</div>
-			<div class="p1" data-one="paper">Paper</div>
-			<div class="p1" data-one="scissors">Scissors</div>
+			<div id="one-choices">
+				<div class="p1" data-one="rock">Rock</div>
+				<div class="p1" data-one="paper">Paper</div>
+				<div class="p1" data-one="scissors">Scissors</div>
+			</div>
 			<div id="score-one">Wins: Losses:</div>
 		</div>
 		<div class="col-md-4 border border-dark rounded" id="results">results</div>
 		<div class="col-md-4 border border-dark rounded" id="player-two-box">
 			<div id="player-two">Player 2</div>
-			<div class="p2" data-two="rock">Rock</div>
-			<div class="p2" data-two="paper">Paper</div>
-			<div class="p2" data-two="scissors">Scissors</div>
+			<div id="two-choices">
+				<div class="p2" data-two="rock">Rock</div>
+				<div class="p2" data-two="paper">Paper</div>
+				<div class="p2" data-two="scissors">Scissors</div>
+			</div>
 			<div id="score-two">Wins: Losses:</div>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-12">chat goes here...</div>
+		<div class="col-md-12">
+			<div id="chat-display" rows="10"></div>
+			<form class="form-inline">
+			  <div class="form-group">
+			    <label class="sr-only" for="chat">Name</label>
+			    <input type="text" class="form-control" id="chat" placeholder="Type your comments here...">
+			  </div>
+			  <button type="submit" class="btn btn-default" id="chat-send">Send</button>
+			</form>
+		</div>
 	</div>
 </div>
 

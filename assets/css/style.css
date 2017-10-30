@@ -9,3 +9,23 @@
 #player-display {
 	margin-bottom: 30px;
 }
+
+#chat-display {
+	overflow-y: scroll;
+    height: 100px;
+    width: 100%;
+    resize: none;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column-reverse;
+    font-size: 14px;
+}
+
+#chat {
+	width: 600px;
+	margin: 14px;
+}
+
+p {
+	margin-bottom: 0;
+}

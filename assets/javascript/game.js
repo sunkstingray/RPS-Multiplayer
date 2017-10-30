@@ -34,13 +34,14 @@ $("#player-submit").on("click", function(event) {
 
         
         playerCheck();
-        
+        getNum(player);
+        console.log(playerNum+"!!!");
 
-        $('#player-display').html("Hi "+player+"! You are player 1.");
+        $('#player-display').html("Hi "+player+"! You are player "+playerNum+".");
       });
 
 
-// Function to determine winner
+// Function to determine winner and update win and loss
 function determineWinner() {
 		if (playerOneChoice === playerTwoChoice) {
 		$("#results").html("It was a tie!");
@@ -96,10 +97,16 @@ function determineWinner() {
     })
 };
 
-// Listen for player one play
+// Listen for player
 $(".p1").on("click", function(){
 
 	playerOneChoice = $(this).attr("data-one");
+
+	console.log(playerOneChoice);
+
+	database.ref("players/1").update({
+    	choice: playerOneChoice
+    })
 
 	determineWinner();
 
@@ -120,16 +127,16 @@ function playerCheck() {
   				playerNum = 1;
   				console.log("LO");
   			}
-  			console.log("player number:"+playerNum)
+  			
   			database.ref("players").update({
         	[playerNum]: {
         			losses: 0,
         			name: player,
-        			wins: 0
+        			wins: 0,
         		}
         	
       	});
-
+        
   			if (playerNum == 1){
 				database.ref().child("players/1").onDisconnect().remove();
 			}
@@ -140,8 +147,46 @@ function playerCheck() {
   else {
   	$('#player-display').html("Sorry, game is full. Try again later.");
   }
+
 });
-	console.log(playerNum);
+console.log(playerNum);
 }
 
+// Get player number from firebase
 
+function getNum(name) {
+   database.ref("players").once("value", function(snapshot) {
+    snapshot.forEach(function(childSnapshot) {
+      var currentName = childSnapshot.child("name").val();
+      console.log("currentName:"+currentName);
+      var currentNum = childSnapshot.key;
+      console.log("currentNum:"+currentNum);
+      if (player === currentName){
+        playerNum = currentNum;
+      }})})};
+
+// chat add
+$("#chat-send").on("click", function(event) {
+  // Prevent form from submitting
+  event.preventDefault();
+
+  var newChat = $("#chat").val();
+  database.ref("chat").push({
+    // "name": player,
+    "message": newChat
+  });
+
+});
+
+//update chat window
+   database.ref("chat").on("value", function(snapshot) {
+    snapshot.forEach(function(childSnapshot) {
+      var chatLineId = $("#chat-display")
+      var chatLine = $("<p>")
+      var chatLineName = childSnapshot.child("name").val();
+      var chatLineMessage = childSnapshot.child("message").val();
+      // chatLine.addClass("player-"+playerNum);
+      chatLine.html(chatLineName+": "+chatLineMessage)
+      chatLineId.prepend(chatLine);
+    })
+    });

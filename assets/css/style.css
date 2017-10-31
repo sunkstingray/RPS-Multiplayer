@@ -30,19 +30,19 @@ p {
 	margin-bottom: 0;
 }
 
-.rock {
+.Rock {
 	font-family: 'Frijole', cursive;
 	font-size: 30px;
 	color: #331f1b;
 }
 
-.paper {
+.Paper {
 	font-family: 'Fredericka the Great', cursive;
 	font-size: 35px;
 	color: #3a392c;
 }
 
-.scissors {
+.Scissors {
 	font-family: 'Bigelow Rules', cursive;
 	font-size: 48px;
 	color: #262d38;

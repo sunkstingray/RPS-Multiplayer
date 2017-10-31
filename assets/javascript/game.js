@@ -2,13 +2,14 @@
 var playerNum = "";
 var player;
 var playerOneChoice;
-var playerTwoChoice = "rock";
+var playerTwoChoice;
 var playerOneWins = 0;
 var playerTwoWins = 0;
 var playerOneLosses = 0;
 var playerTwoLosses = 0;
-var oneChoices = "<div class='p1 rock' data-one='rock'>Rock</div><div class='p1 paper' data-one='paper'>Paper</div><div class='p1 scissors' data-one='scissors'>Scissors</div>";
-var twoChoices = "<div class='p2 rock' data-one='rock'>Rock</div><div class='p2 paper' data-one='paper'>Paper</div><div class='p2 scissors' data-one='scissors'>Scissors</div>";
+var oneChoices = "<div class='p1 Rock' data-one='Rock'>Rock</div><div class='p1 Paper' data-one='Paper'>Paper</div><div class='p1 Scissors' data-one='Scissors'>Scissors</div>";
+var twoChoices = "<div class='p2 Rock' data-two='Rock'>Rock</div><div class='p2 Paper' data-two='Paper'>Paper</div><div class='p2 Scissors' data-two='Scissors'>Scissors</div>";
+
 
 // Initialize Firebase
 var config = {
@@ -32,102 +33,136 @@ $("#player-submit").on("click", function(event) {
         event.preventDefault();
 
         player = $("#player-name").val().trim();
-
         
         playerCheck();
         getNum(player);
-        console.log(playerNum+"!!!");
         greeting();
 
-        
       });
 
 
-// Function to determine winner and update win and loss
-function determineWinner() {
-		if (playerOneChoice === playerTwoChoice) {
-		$("#results").html("It was a tie!");
-	}
+// Determine winner and update win and loss
+function determineWinner(){
+  database.ref("players").once("value", function(snapshot){
+    if(snapshot.child("1").child("choice").exists() && snapshot.child("2").child("choice").exists()){
 
-	else if(playerOneChoice==="rock"){
-        if(playerTwoChoice==="scissors"){
-            $("#results").html("Player 1 wins!");
-            playerOneWins++;
-            playerTwoLosses++;
+      playerOneChoice = snapshot.child("1").child("choice").val();
+      playerTwoChoice = snapshot.child("2").child("choice").val();
+      console.log("playerOneChoice");
+      console.log("playerTwoChoice");
+
+    		if (playerOneChoice === playerTwoChoice) {
+    		$("#results").html("It was a tie!");
+    	}
+
+    	else if(playerOneChoice==="Rock"){
+            if(playerTwoChoice==="Scissors"){
+                $("#results").html("Player 1 wins!");
+                playerOneWins++;
+                playerTwoLosses++;
+            }
+            else{
+                $("#results").html("Player 2 wins!");
+                playerTwoWins++;
+                playerOneLosses++;
+            }
         }
-        else{
-            $("#results").html("Player 2 wins!");
-            playerTwoWins++;
-            playerOneLosses++;
+
+        else if(playerOneChoice==="Paper"){
+            if(playerTwoChoice==="Rock"){
+                $("#results").html("Player 1 wins!");
+                playerOneWins++;
+                playerTwoLosses++;
+            }
+            else{
+                $("#results").html("Player 2 wins!");
+                playerTwoWins++;
+                playerOneLosses++;
+            }
         }
+
+        else if(playerOneChoice==="Scissors"){
+            if(playerTwoChoice==="Rock"){
+                $("#results").html("Player 2 wins!");
+                playerTwoWins++;
+                playerOneLosses++;
+            }
+            else{
+                $("#results").html("Player 1 wins!");
+                playerOneWins++;
+                playerTwoLosses++;
+            }
+        }
+
+        database.ref("players/1").update({
+        	losses: playerOneLosses,
+        	wins: playerOneWins,
+        });
+
+        database.ref("players/2").update({
+        	losses: playerTwoLosses,
+        	wins: playerTwoWins,
+        });
+
+        var choice1 = snapshot.child("players").child("1").child("choice").val();
+        $('#one-choices').html("<div class='"+choice1+"'>"+choice1+"</div>");
+        var choice2 = snapshot.child("players").child("2").child("choice").val();
+        $('#one-choices').html("<div class='"+choice2+"'>"+choice2+"</div>");
+
+        
+
+        setTimeout(function(){
+          $("#results").empty();
+          database.ref().update({turn: 1});
+          database.ref("players").child("1").child("choice").remove();
+          database.ref("players").child("2").child("choice").remove();
+        }, 3000);
     }
-
-    else if(playerOneChoice==="paper"){
-        if(playerTwoChoice==="rock"){
-            $("#results").html("Player 1 wins!");
-            playerOneWins++;
-            playerTwoLosses++;
-        }
-        else{
-            $("#results").html("Player 2 wins!");
-            playerTwoWins++;
-            playerOneLosses++;
-        }
-    }
-
-    else if(playerOneChoice==="scissors"){
-        if(playerTwoChoice==="rock"){
-            $("#results").html("Player 2 wins!");
-            playerTwoWins++;
-            playerOneLosses++;
-        }
-        else{
-            $("#results").html("Player 1 wins!");
-            playerOneWins++;
-            playerTwoLosses++;
-        }
-    }
-
-    database.ref("players/1").update({
-    	losses: playerOneLosses,
-    	wins: playerOneWins,
-    })
-
-    database.ref("players/2").update({
-    	losses: playerTwoLosses,
-    	wins: playerTwoWins,
-    })
+  });
 };
 
-// Listen for player
-$(".p1").on("click", function(){
+
+// Listen for player 1 choice
+$("#player-one-box").on("click", ".p1", function(){
 
 	playerOneChoice = $(this).attr("data-one");
 
-	console.log(playerOneChoice);
-
 	database.ref("players/1").update({
     	choice: playerOneChoice
-    })
+    });
 
-	determineWinner();
+  database.ref().update({
+      turn: 2
+    });
 
-    $("#score-one").html("Wins: "+playerOneWins+" Losses: "+playerOneLosses);
-    $("#score-two").html("Wins: "+playerTwoWins+" Losses: "+playerTwoLosses);
+});
+
+// Listen for player 2 choice
+$("#player-two-box").on("click", ".p2", function(){
+
+  playerTwoChoice = $(this).attr("data-two");
+
+  database.ref("players/2").update({
+      choice: playerTwoChoice
+    });
+
+    database.ref().update({
+      turn: 1
+    });
+
+    determineWinner();
 });
 
 // check to see how many players are connected
 
 function playerCheck() {
-	database.ref("players").once("value", function(snapshot) {
-  		if (snapshot.numChildren() < 2){
-  			if (snapshot.child("1").exists()) {
+	database.ref().once("value", function(snapshot) {
+  		if (snapshot.child("players").numChildren() < 2){
+  			if (snapshot.child("players").child("1").exists()) {
   				playerNum = 2;
-  				console.log("YO");
   			}
   			else {
   				playerNum = 1;
-  				console.log("LO");
   			}
   			
   			database.ref("players").update({
@@ -141,18 +176,22 @@ function playerCheck() {
         
   			if (playerNum == 1){
 				database.ref().child("players/1").onDisconnect().remove();
+        database.ref().child("turn").onDisconnect().remove();
 			}
 			else {
 				database.ref().child("players/2").onDisconnect().remove();
+        database.ref().child("turn").onDisconnect().remove();
 			}
+     
+
   		}
   else {
   	$('#player-display').html("Sorry, game is full. Try again later.");
   }
 
 });
-console.log(playerNum);
-}
+
+};
 
 // Get player number from firebase
 
@@ -160,10 +199,7 @@ function getNum(name) {
    database.ref("players").on("value", function(snapshot) {
     snapshot.forEach(function(childSnapshot) {
       var currentName = childSnapshot.child("name").val();
-      console.log("currentName:"+currentName);
       var currentNum = childSnapshot.key;
-      console.log("currentNum:"+currentNum);
-      console.log("getNum player:"+player);
       if (player === currentName){
         playerNum = currentNum;
       }})})};
@@ -187,7 +223,6 @@ $("#chat-send").on("click", function(event) {
 //update chat window
    database.ref("chat").on("value", function(snapshot) {
     $("#chat-display").empty();
-    console.log("empty");
     snapshot.forEach(function(childSnapshot) {
       var chatLineId = $("#chat-display")
       var chatLine = $("<p>")
@@ -227,6 +262,53 @@ $("#chat-send").on("click", function(event) {
     }
    });
 
+   //Display player names in boxes
+   database.ref().on("value", function(snapshot){
+     if (snapshot.child("players").child("1").exists()){
+        $('#player-one').html(snapshot.child("players").child("1").child("name").val());
+     }
+    if (snapshot.child("players").child("2").exists()){
+        $('#player-two').html(snapshot.child("players").child("2").child("name").val());
+     }
+
+  });   
+
 
    // Display player info
-   
+   database.ref().on("value", function(snapshot){
+     if (snapshot.child("players").numChildren() === 2 && snapshot.child("turn").exists() === false){
+        database.ref().update({turn: 1
+        })
+     }
+
+    });
+
+    // Display player info
+   database.ref().on("value", function(snapshot){
+    getNum(player);
+    console.log(playerNum);
+    console.log(snapshot.child("turn").val());
+
+    if (playerNum == 1 && snapshot.child("turn").val() == 1){
+        $('#one-choices').html(oneChoices);
+        $('#turn-display').html("It's your turn!");
+    }
+
+    if (playerNum == 2 && snapshot.child("turn").val() == 1){
+      $('#turn-display').html("Waiting on Player 1...");
+      $('#two-choices').empty();
+      $('#one-choices').empty();
+    }
+
+    if (playerNum == 1 && snapshot.child("turn").val() == 2){
+        var choice = snapshot.child("players").child("1").child("choice").val();
+        $('#one-choices').html("<div class='"+choice+"'>"+choice+"</div>");
+        $('#turn-display').html("Waiting on Player 2...");
+    }
+
+    if (playerNum == 2 && snapshot.child("turn").val() == 2){
+        $('#two-choices').html(twoChoices);
+        $('#turn-display').html("It's your turn!");
+    }
+
+    });  

@@ -60,3 +60,19 @@ p {
 .player-2 {
 	color: green;
 }
+
+#player-one-box {
+	height: 250px;
+}
+
+#player-two-box {
+	height: 250px;
+}
+
+#results {
+	height: 250px;
+}
+
+.jumbotron {
+	padding: 10px;
+}

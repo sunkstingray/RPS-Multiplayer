@@ -30,20 +30,26 @@ var database = firebase.database();
 // setup player in Firebase
 $("#player-submit").on("click", function(event) {
         
-        event.preventDefault();
+    event.preventDefault();
 
-        player = $("#player-name").val().trim();
-        
-        playerCheck();
-        getNum(player);
-        greeting();
+    player = $("#player-name").val().trim();
 
-      });
+    sessionStorage.clear();
+
+    sessionStorage.setItem("name", player);
+    
+    playerCheck();
+
+    $('#player-display').html("Hi "+player+"! You are player "+sessionStorage.getItem("number")+".");
+
+    $(".chat-hide").show();
+
+  });
 
 
 // Determine winner and update win and loss
-function determineWinner(){
-  database.ref("players").once("value", function(snapshot){
+// function determineWinner(){
+  database.ref("players").on("value", function(snapshot){
     if(snapshot.child("1").child("choice").exists() && snapshot.child("2").child("choice").exists()){
 
       playerOneChoice = snapshot.child("1").child("choice").val();
@@ -94,19 +100,11 @@ function determineWinner(){
             }
         }
 
-        database.ref("players/1").update({
-        	losses: playerOneLosses,
-        	wins: playerOneWins,
-        });
+        
 
-        database.ref("players/2").update({
-        	losses: playerTwoLosses,
-        	wins: playerTwoWins,
-        });
-
-        var choice1 = snapshot.child("players").child("1").child("choice").val();
+        var choice1 = snapshot.child("1").child("choice").val();
         $('#one-choices').html("<div class='"+choice1+"'>"+choice1+"</div>");
-        var choice2 = snapshot.child("players").child("2").child("choice").val();
+        var choice2 = snapshot.child("2").child("choice").val();
         $('#one-choices').html("<div class='"+choice2+"'>"+choice2+"</div>");
 
         
@@ -116,10 +114,20 @@ function determineWinner(){
           database.ref().update({turn: 1});
           database.ref("players").child("1").child("choice").remove();
           database.ref("players").child("2").child("choice").remove();
+
+          database.ref("players/1").update({
+          losses: playerOneLosses,
+          wins: playerOneWins,
+          });
+
+        database.ref("players/2").update({
+          losses: playerTwoLosses,
+          wins: playerTwoWins,
+          });
         }, 3000);
     }
   });
-};
+// };
 
 
 // Listen for player 1 choice
@@ -146,11 +154,11 @@ $("#player-two-box").on("click", ".p2", function(){
       choice: playerTwoChoice
     });
 
-    database.ref().update({
-      turn: 1
-    });
+    // database.ref().update({
+    //   turn: 1
+    // });
 
-    determineWinner();
+    // determineWinner();
 });
 
 // check to see how many players are connected
@@ -160,9 +168,11 @@ function playerCheck() {
   		if (snapshot.child("players").numChildren() < 2){
   			if (snapshot.child("players").child("1").exists()) {
   				playerNum = 2;
+          sessionStorage.setItem("number", playerNum);
   			}
   			else {
   				playerNum = 1;
+          sessionStorage.setItem("number", playerNum);
   			}
   			
   			database.ref("players").update({
@@ -176,6 +186,7 @@ function playerCheck() {
         
   			if (playerNum == 1){
 				database.ref().child("players/1").onDisconnect().remove();
+        database.ref().child("turn").onDisconnect().remove();
         database.ref().child("turn").onDisconnect().remove();
 			}
 			else {
@@ -195,14 +206,14 @@ function playerCheck() {
 
 // Get player number from firebase
 
-function getNum(name) {
-   database.ref("players").on("value", function(snapshot) {
-    snapshot.forEach(function(childSnapshot) {
-      var currentName = childSnapshot.child("name").val();
-      var currentNum = childSnapshot.key;
-      if (player === currentName){
-        playerNum = currentNum;
-      }})})};
+// function getNum(name) {
+//    database.ref("players").on("value", function(snapshot) {
+//     snapshot.forEach(function(childSnapshot) {
+//       var currentName = childSnapshot.child("name").val();
+//       var currentNum = childSnapshot.key;
+//       if (player === currentName){
+//         playerNum = currentNum;
+//       }})})};
 
 // chat add
 $("#chat-send").on("click", function(event) {
@@ -236,18 +247,18 @@ $("#chat-send").on("click", function(event) {
 
    // get player number and show greeting
 
-   function greeting() {
-    database.ref("players").on("value", function(snapshot){
-      if (snapshot.child("1").child("name").val() === player){
-        $('#player-display').html("Hi "+player+"! You are player 1.");
-        $(".chat-hide").show();
-      }
-      else if (snapshot.child("2").child("name").val() === player){
-        $('#player-display').html("Hi "+player+"! You are player 2.");
-        $(".chat-hide").show();
-      }
-    })
-   }
+   // function greeting() {
+   //  database.ref("players").on("value", function(snapshot){
+   //    if (snapshot.child("1").child("name").val() === player){
+   //      $('#player-display').html("Hi "+player+"! You are player 1.");
+   //      $(".chat-hide").show();
+   //    }
+   //    else if (snapshot.child("2").child("name").val() === player){
+   //      $('#player-display').html("Hi "+player+"! You are player 2.");
+   //      $(".chat-hide").show();
+   //    }
+   //  })
+   // }
 
    // Display score when updated
 
@@ -285,9 +296,7 @@ $("#chat-send").on("click", function(event) {
 
     // Display player info
    database.ref().on("value", function(snapshot){
-    getNum(player);
-    console.log(playerNum);
-    console.log(snapshot.child("turn").val());
+    playerNum = sessionStorage.getItem("number");
 
     if (playerNum == 1 && snapshot.child("turn").val() == 1){
         $('#one-choices').html(oneChoices);
@@ -312,3 +321,5 @@ $("#chat-send").on("click", function(event) {
     }
 
     });  
+
+// display results

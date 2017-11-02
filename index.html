@@ -17,7 +17,7 @@
 
 </head>
 <body>
-<div class="jumbotron"><h1>Rock, Paper, Scissors</h1></div>
+<div class="jumbotron jumbotron-fluid"><h1>Rock, Paper, Scissors</h1></div>
 
 <div class="container">
 	<div class="row">
@@ -33,29 +33,35 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-4 border border-dark rounded" id="player-one-box">
-			<div id="player-one">Waiting on Player 1</div>
-			<div id="one-choices">
-				
+		<div class="col-md-4">
+			<div id="player-one-box">
+				<div id="player-one" class="text-uppercase">Waiting on Player 1</div>
+				<div id="one-choices">
+					
+				</div>
+				<div id="score-one">Wins: 0 Losses: 0</div>
 			</div>
-			<div id="score-one">Wins:_ Losses:_</div>
 		</div>
-		<div class="col-md-4 border border-dark rounded" id="results"></div>
-		<div class="col-md-4 border border-dark rounded" id="player-two-box">
-			<div id="player-two">Waiting on Player 2</div>
-			<div id="two-choices">
-				
+		<div class="col-md-4">
+			<div id="results" class="display-4"></div>
+		</div>
+		<div class="col-md-4">
+			<div id="player-two-box">
+				<div id="player-two" class="text-uppercase">Waiting on Player 2</div>
+				<div id="two-choices">
+					
+				</div>
+				<div id="score-two">Wins: 0 Losses: 0</div>
 			</div>
-			<div id="score-two">Wins:_ Losses:_</div>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-md-12 chat-hide">
-			<div id="chat-display" rows="10"></div>
+			<div id="chat-display" class="border border-dark rounded" rows="10"></div>
 			<form class="form-inline">
 			  <div class="form-group">
 			    <label class="sr-only" for="chat">Name</label>
-			    <input type="text" class="form-control" id="chat" placeholder="Type your comments here...">
+			    <input type="text" class="form-control border border-dark rounded" id="chat" placeholder="Type your message here...">
 			  </div>
 			  <button type="submit" class="btn btn-default" id="chat-send">Send</button>
 			</form>
@@ -71,6 +77,7 @@
 <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-firestore.js"></script>
 <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase-messaging.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/firebase-functions@0.7.2/lib/index.min.js"></script> -->
 
 <!-- Bootstrap JavaScript CDN -->
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
@@ -82,3 +89,4 @@
 	
 </body>
 </html>
+

@@ -1,5 +1,7 @@
 .p1 {
 	cursor: pointer;
+	line-height: 100%;
+	text-align: center;
 }
 
 .p2 {
@@ -8,6 +10,16 @@
 
 #player-display {
 	margin-bottom: 30px;
+}
+
+#player-display h3{
+	color: white;
+	text-shadow: 5px 5px 10px black;
+}
+
+#turn-display h3{
+	color: white;
+	text-shadow: 5px 5px 10px black;
 }
 
 #chat-display {
@@ -23,7 +35,7 @@
 
 #chat {
 	width: 600px;
-	margin: 14px;
+	margin: 14px 0;
 }
 
 p {
@@ -32,19 +44,19 @@ p {
 
 .Rock {
 	font-family: 'Frijole', cursive;
-	font-size: 30px;
+	font-size: 33px;
 	color: #331f1b;
 }
 
 .Paper {
 	font-family: 'Fredericka the Great', cursive;
-	font-size: 35px;
+	font-size: 40px;
 	color: #3a392c;
 }
 
 .Scissors {
 	font-family: 'Bigelow Rules', cursive;
-	font-size: 48px;
+	font-size: 52px;
 	color: #262d38;
 }
 
@@ -63,16 +75,77 @@ p {
 
 #player-one-box {
 	height: 250px;
+	background-color: #e1dff2;
+	padding: 10px 20px;
+	border: 8px solid #303038;
+	border-radius: 16px;
+	position: relative;
 }
 
 #player-two-box {
 	height: 250px;
+	background-color: #e1dff2;
+	padding: 10px 20px;
+	border: 8px solid #303038;
+	border-radius: 16px;
+	position: relative;
 }
 
 #results {
 	height: 250px;
+	background-color: #e1dff2;
+	padding: 20px;
+	border: 8px solid #303038;
+	border-radius: 16px;
+	text-align: center;
 }
 
 .jumbotron {
-	padding: 10px;
+	padding: 10px 30px;
+	background-image: url(../images/rps.gif);
+	background-color: #303038;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: left top;
+    color: #ccc;
+}
+
+body {
+	background-image: url(../images/rock-paper-scissor-ft.jpg);
+	background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+#chat-display {
+	background-color: white;
+	padding: 10px 20px;
+	margin-top: 30px
+}
+
+#score-one {
+	position: absolute;
+  	bottom: 10px;
+  	left: 20px;
+  	font-weight: bold;
+}
+
+#score-two {
+	position: absolute;
+  	bottom: 10px;
+  	left: 20px;
+  	font-weight: bold;
+}
+
+#two-choices {
+	position: absolute;
+	top: 25%;
+	left: 30%;
+}
+
+#one-choices {
+	position: absolute;
+	top: 25%;
+	left:30%;
+}
 }

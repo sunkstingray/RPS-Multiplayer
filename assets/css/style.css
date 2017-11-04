@@ -6,6 +6,8 @@
 
 .p2 {
 	cursor: pointer;
+	line-height: 100%;
+	text-align: center;
 }
 
 #player-display {

@@ -2,9 +2,9 @@
 
 *This game allows two people to play rock, paper, scissors online with chat functionality.*
 
-### Technology Used:
+#### Technology Used:
 
-'HTML 5' 'CSS 3' 'JavaScript' 'Firebase'
+`HTML 5` `CSS 3` `JavaScript` `Firebase`
 
 ## Instructions
 

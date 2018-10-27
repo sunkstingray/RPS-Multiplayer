@@ -8,7 +8,7 @@
 
 ## Instructions
 
-To play two people should connect to the link below (only two people can connect at once).
+To play, two people should connect to the link below (only two people can connect at once).
 
 For testing purposes you may open in two browser tabs.
 
